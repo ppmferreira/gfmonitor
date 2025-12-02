@@ -1,39 +1,79 @@
-# GF Monitor - Monitor de Comandos GM
+# 🛡️ GF Monitor - Sistema Profissional de Monitoramento GM
 
-Monitor em tempo real de comandos GM executados nos servidores do jogo, com notificações automáticas no Discord.
+> **Solução empresarial completa para monitoramento em tempo real de atividades de Game Masters, com notificações automáticas e inteligentes no Discord.**
 
-## 📋 Funcionalidades
+Mantenha total controle e transparência sobre todas as ações administrativas executadas em seus servidores de jogo. O GF Monitor é um sistema robusto, confiável e totalmente automatizado que garante a segurança e auditoria completa das operações dos seus Game Masters.
 
-- ✅ Monitora múltiplos canais/zonas simultaneamente
-- ✅ Envia notificações formatadas para Discord via webhook
-- ✅ Ignora comandos `sii 1` e `sii 0`
-- ✅ Rate limiting inteligente para evitar bloqueios
-- ✅ Processamento de histórico opcional
-- ✅ Execução como serviço systemd (auto-restart e boot automático)
+---
 
-## 🚀 Instalação
+## ✨ Por que escolher o GF Monitor?
 
-1. Configure o webhook do Discord no arquivo `gfmonitor.py`:
-```python
-DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/SEU_WEBHOOK_AQUI"
+### 🎯 Recursos Principais
+
+- **✅ Monitoramento Multi-Canal**: Acompanhe simultaneamente todos os seus servidores e zonas em tempo real
+- **✅ Notificações Instantâneas**: Receba alertas formatados e profissionais diretamente no Discord
+- **✅ Filtragem Inteligente**: Sistema de filtros configurável que ignora comandos irrelevantes (como `sii 0` e `sii 1`)
+- **✅ Proteção Anti-Spam**: Rate limiting inteligente que evita bloqueios e garante entrega de todas as notificações
+- **✅ Alta Disponibilidade**: Executa como serviço systemd com reinicialização automática e inicialização no boot
+- **✅ Auditoria Completa**: Registra timestamp, nome do GM, comando executado e localização exata
+- **✅ Configuração Segura**: Credenciais protegidas em arquivo `.env` separado
+- **✅ Zero Dependências Externas**: Utiliza apenas bibliotecas nativas do Python
+
+### 🔒 Segurança e Confiabilidade
+
+- Logs detalhados via systemd journal para auditoria completa
+- Retry automático com backoff exponencial em caso de falhas temporárias
+- Tratamento robusto de erros e exceções
+- Proteção contra perda de dados em caso de rotação de logs
+- Monitoramento contínuo sem interrupções
+
+---
+
+## 🚀 Guia de Instalação Rápida
+
+### Passo 1: Configurar o Webhook do Discord
+
+Edite o arquivo `.env` e adicione sua URL de webhook:
+
+```bash
+DISCORD_WEBHOOK_URL=https://discord.com/api/webhooks/SEU_WEBHOOK_AQUI
 ```
 
-2. Ajuste as zonas monitoradas conforme necessário:
+### Passo 2: Configurar Zonas de Monitoramento
+
+Edite o arquivo `gfmonitor.py` e ajuste as zonas conforme seus servidores:
+
 ```python
 ZONES = [
     {"path": "/root/gf_server/ZoneServer101", "canal": "Canal 1"},
     {"path": "/root/gf_server/ZoneServer102", "canal": "Canal 2"},
-    # ... adicione mais canais aqui
+    {"path": "/root/gf_server/ZoneServer103", "canal": "Canal 3"},
+    # Adicione quantos canais precisar...
 ]
 ```
 
-3. Instale o serviço:
+### Passo 3: Instalar e Ativar o Serviço
+
+Execute os comandos abaixo para instalar o monitor como serviço do sistema:
+
 ```bash
+# Copiar arquivo de serviço
 sudo cp /root/gfmonitor/gfmonitor.service /etc/systemd/system/
+
+# Recarregar configurações do systemd
 sudo systemctl daemon-reload
+
+# Ativar inicialização automática
 sudo systemctl enable gfmonitor
+
+# Iniciar o serviço
 sudo systemctl start gfmonitor
+
+# Verificar status
+sudo systemctl status gfmonitor
 ```
+
+✅ **Pronto!** Seu sistema de monitoramento está ativo e operacional.
 
 ## 🎮 Comandos de Gerenciamento
 
