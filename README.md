@@ -1,8 +1,8 @@
 # 🛡️ GF Monitor - Sistema Profissional de Monitoramento GM
 
-> **Solução empresarial completa para monitoramento em tempo real de atividades de Game Masters, com notificações automáticas e inteligentes no Discord.**
+> **Solução completa para monitoramento em tempo real de atividades de Game Masters em servidores Grand Fantasia, com notificações automáticas e inteligentes no Discord.**
 
-Mantenha total controle e transparência sobre todas as ações administrativas executadas em seus servidores de jogo. O GF Monitor é um sistema robusto, confiável e totalmente automatizado que garante a segurança e auditoria completa das operações dos seus Game Masters.
+Mantenha total controle e transparência sobre todas as ações administrativas executadas em seus servidores Grand Fantasia.
 
 ---
 
@@ -10,12 +10,13 @@ Mantenha total controle e transparência sobre todas as ações administrativas 
 
 ### 🎯 Recursos Principais
 
-- **✅ Monitoramento Multi-Canal**: Acompanhe simultaneamente todos os seus servidores e zonas em tempo real
+- **✅ Monitoramento Multi-Canal**: Acompanhe simultaneamente todos os seus servidores e zonas Grand Fantasia em tempo real
 - **✅ Notificações Instantâneas**: Receba alertas formatados e profissionais diretamente no Discord
+- **✅ Detecção de GM Tool**: Monitora tentativas de conexão via GM Tool com alertas específicos
 - **✅ Filtragem Inteligente**: Sistema de filtros configurável que ignora comandos irrelevantes (como `sii 0` e `sii 1`)
 - **✅ Proteção Anti-Spam**: Rate limiting inteligente que evita bloqueios e garante entrega de todas as notificações
 - **✅ Alta Disponibilidade**: Executa como serviço systemd com reinicialização automática e inicialização no boot
-- **✅ Auditoria Completa**: Registra timestamp, nome do GM, comando executado e localização exata
+- **✅ Auditoria Completa**: Registra timestamp, nome do GM, comando executado, localização exata e IPs de acesso
 - **✅ Configuração Segura**: Credenciais protegidas em arquivo `.env` separado
 - **✅ Zero Dependências Externas**: Utiliza apenas bibliotecas nativas do Python
 
@@ -149,7 +150,9 @@ Consulte logs de um intervalo de datas específico.
 
 ## 📨 Formato das Notificações Discord
 
-Cada comando executado por um GM gera uma notificação elegante e informativa:
+### Comando GM Detectado
+
+Cada comando executado por um GM gera uma notificação roxa elegante e informativa:
 
 **🛡️ Comando GM Detectado**
 
@@ -160,8 +163,24 @@ Cada comando executado por um GM gera uma notificação elegante e informativa:
 🕒 2025/12/02 14:35:21-03
 ```
 
+### Tentativa de GM Tool
+
+Tentativas de acesso via GM Tool geram alertas específicos com cores diferentes:
+
+**⚠️ TENTATIVA DE GM TOOL DETECTADA 🔓** (Verde - Conectado)
+**⚠️ TENTATIVA DE GM TOOL DETECTADA 🔒** (Vermelho - Desconectado)
+
+```
+🌐 Endereço IP: 167.94.138.191
+📊 Status: CONECTADO / DESCONECTADO
+📍 Canal: Canal 1
+🕒 2025/12/02 15:37:03-03
+```
+
 ### Informações Incluídas:
-- **Nome do Game Master**: Identifica quem executou a ação
+- **Nome do Game Master**: Identifica quem executou a ação (em comandos)
+- **Endereço IP**: IP de origem da tentativa de GM Tool
+- **Status**: Conexão ou desconexão do GM Tool
 - **Canal/Zona**: Localização exata do servidor
 - **Comando Completo**: O comando GM exato que foi executado
 - **Timestamp Preciso**: Data e hora com fuso horário
@@ -395,22 +414,21 @@ Para problemas técnicos:
 
 ## 📄 Licença e Notas
 
-- **Desenvolvido para**: Servidores Grand Fantasia
+- **Desenvolvido para**: Servidores Grand Fantasia Privates
 - **Compatibilidade**: Testado em Ubuntu/Debian Linux
 - **Manutenção**: Sistema pronto para produção com auto-recuperação
-- **Documentação**: Mantida e atualizada regularmente
 
 ---
 
 ## ✅ Checklist de Implantação
 
-- [ ] Webhook do Discord configurado no `.env`
-- [ ] Zonas corretas configuradas em `ZONES`
-- [ ] Serviço instalado via systemd
-- [ ] Serviço habilitado para inicialização automática
-- [ ] Teste de notificação bem-sucedido
-- [ ] Logs sendo gerados corretamente
-- [ ] Backup das configurações realizado
+- [x] Webhook do Discord configurado no `.env`
+- [x] Zonas corretas configuradas em `ZONES`
+- [x] Serviço instalado via systemd
+- [x] Serviço habilitado para inicialização automática
+- [x] Teste de notificação bem-sucedido
+- [x] Logs sendo gerados corretamente
+- [x] Backup das configurações realizado
 
 ---
 
