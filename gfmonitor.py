@@ -163,12 +163,34 @@ def parse_gm_line(line: str):
     """
     Esperado algo assim:
     578245,2025/11/16 23:57:21-03,P:200000274:KombSemPorta,Z:42:琉璃山脈:367:512,ci 16225
+    OU
+    113476,2025/12/02 15:37:03-03,GM tool 167.94.138.191 disconnected.
     """
     parts = line.split(",")
-    if len(parts) < 5:
+    if len(parts) < 3:
         return None
 
     timestamp = parts[1].strip()
+    
+    # Verifica se é GM tool
+    if len(parts) == 3 and "GM tool" in parts[2]:
+        tool_info = parts[2].strip()
+        # Extrai IP e status (connected/disconnected)
+        tool_parts = tool_info.split()
+        if len(tool_parts) >= 3:
+            ip = tool_parts[2]
+            status = tool_parts[3] if len(tool_parts) > 3 else "unknown"
+            return {
+                "type": "gmtool",
+                "timestamp": timestamp,
+                "ip": ip,
+                "status": status.rstrip(".")
+            }
+    
+    # Comando GM normal
+    if len(parts) < 5:
+        return None
+
     p_field = parts[2].strip()  # P:playerId:Nome
     command = parts[4].strip()  # ex: "ci 16225"
 
@@ -179,6 +201,7 @@ def parse_gm_line(line: str):
         char_name = p_parts[2]
 
     return {
+        "type": "command",
         "timestamp": timestamp,
         "char_name": char_name,
         "command": command,
@@ -194,6 +217,54 @@ def process_line(line: str, filename: str, canal: str, skip_discord=False):
     if not info:
         return
 
+    # Processa GM Tool
+    if info.get("type") == "gmtool":
+        ip = info["ip"]
+        status = info["status"]
+        timestamp = info["timestamp"]
+        
+        # Define cor e emoji baseado no status
+        if status == "connected":
+            color = 0x00FF00  # Verde
+            emoji = "🔓"
+            status_text = "CONECTADO"
+        else:
+            color = 0xFF0000  # Vermelho
+            emoji = "🔒"
+            status_text = "DESCONECTADO"
+        
+        embed = {
+            "title": f"⚠️ TENTATIVA DE GM TOOL DETECTADA {emoji}",
+            "color": color,
+            "fields": [
+                {
+                    "name": "🌐 Endereço IP",
+                    "value": f"`{ip}`",
+                    "inline": True
+                },
+                {
+                    "name": "📊 Status",
+                    "value": f"**{status_text}**",
+                    "inline": True
+                },
+                {
+                    "name": "📍 Canal",
+                    "value": f"**{canal}**",
+                    "inline": False
+                }
+            ],
+            "footer": {
+                "text": f"🕒 {timestamp}"
+            }
+        }
+        
+        if not skip_discord:
+            msg_summary = f"[GM TOOL] {ip} → {status_text} ({canal})"
+            print(msg_summary)
+            send_to_discord(embed, skip=skip_discord)
+        return
+    
+    # Processa comando GM normal
     char_name = info["char_name"]
     command = info["command"]
     timestamp = info["timestamp"]
@@ -205,7 +276,7 @@ def process_line(line: str, filename: str, canal: str, skip_discord=False):
     # Cria embed bonitinho
     embed = {
         "title": "🛡️ Comando GM Detectado",
-        "color": 0xFF5733,  # Cor laranja/vermelha
+        "color": 0x9B59B6,  # Cor roxa
         "fields": [
             {
                 "name": "👮 Game Master",
