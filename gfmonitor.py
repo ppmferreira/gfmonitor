@@ -198,8 +198,8 @@ def process_line(line: str, filename: str, canal: str, skip_discord=False):
     command = info["command"]
     timestamp = info["timestamp"]
     
-    # Ignora comandos sii 1 e sii 0
-    if command.lower() in ["sii 0", "sii 1"]:
+    # Ignora comandos sii (todas as variações)
+    if command.lower().startswith("sii ") or "recv gm cmd[sii" in command.lower():
         return
 
     # Cria embed bonitinho
@@ -225,8 +225,7 @@ def process_line(line: str, filename: str, canal: str, skip_discord=False):
         ],
         "footer": {
             "text": f"🕒 {timestamp}"
-        },
-        "timestamp": datetime.now().isoformat()
+        }
     }
     
     if not skip_discord:
